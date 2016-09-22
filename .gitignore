@@ -1,0 +1,6 @@
+*.sqlite*
+
+.coverage
+htmlcov/
+
+flights/settings_local.py
