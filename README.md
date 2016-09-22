@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/mgp4/delays.svg?branch=master)](https://travis-ci.org/mgp4/delays)
+[![Coverage Status](https://coveralls.io/repos/github/mgp4/delays/badge.svg?branch=master)](https://coveralls.io/github/mgp4/delays?branch=master)
+
+
 ## Installation
 
 Needed: Python 3.5
