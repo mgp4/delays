@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 class Flight(Base):
     __tablename__ = 'flight'
 
+    id = Column(Integer, primary_key=True)
     carrier = Column(String(2), nullable=False)
-    flight_number = Column(Integer, nullable=False, primary_key=True)
+    flight_number = Column(Integer, nullable=False)
     departure_airport = Column(String(3), nullable=False)
     arrival_airport = Column(String(3), nullable=False)
     scheduled_departure = Column(DateTime, nullable=True)
