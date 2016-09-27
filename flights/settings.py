@@ -6,7 +6,7 @@ DB_URL = 'sqlite:///:memory:'
 
 LOGGING = lambda: {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
 
     'formatters': {
         'verbose': {

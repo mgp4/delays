@@ -12,6 +12,15 @@ Needed: Python 3.5
 4. Create `flights/settings_local.py` if customized settings are needed.
 
 
+## Upgrading
+
+Call `pip install -r requirements.txt` to install all missing dependencies.
+
+Call `alembic upgrade head` to upgrade the DB schema.
+See [the manual](http://alembic.zzzcomputing.com/en/latest/tutorial.html)
+for more info/commands.
+
+
 ## Testing
 
 Run `./test.sh`.
