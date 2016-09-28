@@ -24,6 +24,7 @@ def save_redis(flight):
 
 def import_csv(csvfile, save=save_db, sparse=False):
     """Imports data from CSV file.
+
     :param csvfile: opened file
     :param save: saving method, `save_db` or `save_redis`
     :param sparse: degree of sparseness, the greater the sparser
