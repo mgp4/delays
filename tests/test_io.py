@@ -31,4 +31,5 @@ def test_import_redis():
     io.import_csv(csv_file(), save=io.save_redis)
 
     assert redis.get('flight_5202_2016-04-29 17:50:00') \
-        ['actual_departure'] == '2016-04-29 20:01:00'
+        ['actual_departure'] == datetime(year=2016, month=4, day=29,
+                                         hour=20, minute=1)

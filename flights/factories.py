@@ -41,13 +41,11 @@ class Flight(SQLAlchemyModelFactory):
     actual_departure = lazy_date_time  # TODO = scheduled +/- few hours
 
 
-def json_flight():
-    return factory.build(dict, FACTORY_CLASS=Flight)
+def json_flight(**kwargs):
+    return factory.build(dict, FACTORY_CLASS=Flight, **kwargs)
 
 
-def redis_flight():
-    flight = json_flight()
-    for column in ['scheduled_departure', 'actual_departure']:
-        flight[column] = flight[column].strftime('%Y-%m-%d %H:%M:%S')
+def redis_flight(**kwargs):
+    flight = json_flight(**kwargs)
     io.save_redis(flight)
     return flight

@@ -11,13 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 def save_db(flight):
-    flight.update({
-        'scheduled_departure':
-            dateutil.parser.parse(flight['scheduled_departure']),
-        'actual_departure':
-            dateutil.parser.parse(flight['actual_departure'])
-            if flight['actual_departure'] else None,
-    })
     db_session.add(models.Flight(**flight))
     db_session.commit()
 
@@ -38,8 +31,11 @@ def import_csv(csvfile, save=save_db):
             'flight_number': row['fltno'],
             'departure_airport': row['dep_apt'],
             'arrival_airport': row['arr_apt'],
-            'scheduled_departure': row['scheduled_departure'],
-            'actual_departure': row['actual_departure'],
+            'scheduled_departure':
+                dateutil.parser.parse(row['scheduled_departure']),
+            'actual_departure':
+                dateutil.parser.parse(row['actual_departure'])
+                if row['actual_departure'] else None,
         }
         save(flight)
 
