@@ -12,6 +12,12 @@ Needed: Python 3.5
 4. Create `flights/settings_local.py` if customized settings are needed.
 
 
+## Usage
+
+`app.py` is the central executable script.
+See `./app.py --help` for options.
+
+
 ## Upgrading
 
 Call `pip install -r requirements.txt` to install all missing dependencies.

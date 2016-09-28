@@ -16,15 +16,16 @@ class Flight(Base):
     __tablename__ = 'flight'
 
     id = Column(Integer, primary_key=True)
-    carrier = Column(String(2), nullable=False)
+    carrier = Column(String(3), nullable=False)
     flight_number = Column(Integer, nullable=False)
     departure_airport = Column(String(3), nullable=False)
     arrival_airport = Column(String(3), nullable=False)
     scheduled_departure = Column(DateTime, nullable=True)
     actual_departure = Column(DateTime, nullable=True)
+    predicated_departure = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return '<Flight %s>' % self.flight_number
+        return '<Flight %s>' % self.id
 
     def __str__(self):
         return ('%(flight_number)s: '
