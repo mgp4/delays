@@ -1,4 +1,5 @@
 import csv
+import random
 
 import dateutil.parser
 import logging
@@ -21,11 +22,29 @@ def save_redis(flight):
               flight)
 
 
-def import_csv(csvfile, save=save_db):
+def import_csv(csvfile, save=save_db, sparse=False):
+    """Imports data from CSV file.
+    :param csvfile: opened file
+    :param save: saving method, `save_db` or `save_redis`
+    :param sparse: degree of sparseness, the greater the sparser
+    """
+
     reader = csv.DictReader(csvfile)
-    count = 0
+    processed = 0
+    imported = 0
 
     for row in reader:
+        if processed % 1000 == 0:
+            if sparse:
+                logger.info('%d flights processed, %d imported...'
+                            % (processed, imported))
+            else:
+                logger.info('%d flights imported...' % imported)
+
+        if sparse and random.randint(0, sparse) != 0:
+            processed += 1
+            continue
+
         flight = {
             'carrier': row['carrier'],
             'flight_number': row['fltno'],
@@ -39,6 +58,7 @@ def import_csv(csvfile, save=save_db):
         }
         save(flight)
 
-        count += 1
-        if count % 1000 == 0:
-            logger.info('%d flights imported...' % count)
+        processed += 1
+        imported += 1
+
+    logger.info('%d flights imported.' % imported)

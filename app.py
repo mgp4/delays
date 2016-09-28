@@ -6,7 +6,7 @@ from flights import io, models, engine
 
 
 arg_parser = argparse.ArgumentParser(
-    description='Delays predicator',
+    description='Delays predictor',
 )
 arg_parser.add_argument('--redis', action='store_true',
                         help='Try to use Redis as much as possible.')
@@ -14,6 +14,8 @@ arg_parser.add_argument('--create', action='store_true',
                         help='Creates DB schema.')
 arg_parser.add_argument('--import', dest='import_csv', metavar='CSV',
                         help='Imports content of a CSV file.')
+arg_parser.add_argument('--sparse', type=int, metavar='INT',
+                        help='Optional sparseness for import.')
 arg_parser.add_argument('--predict', action='store_true',
                         help='Predicts departures.')
 arg_parser.add_argument(
@@ -32,7 +34,8 @@ def main():
     if args.import_csv:
         io.import_csv(open(args.import_csv),
                       save=io.save_redis if args.redis
-                           else io.save_db)
+                           else io.save_db,
+                      sparse=args.sparse)
 
     if args.predict:
         if args.redis:
