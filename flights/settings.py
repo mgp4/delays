@@ -3,6 +3,8 @@ import logging.config
 
 DB_URL = 'sqlite:///:memory:'
 
+REDIS_CONFIG = {}
+
 
 LOGGING = lambda: {
     'version': 1,

@@ -2,8 +2,7 @@
 
 import argparse
 
-from flights.models import create_db
-from flights.parser import parse_csv
+from flights import io, models
 
 
 arg_parser = argparse.ArgumentParser(
@@ -11,18 +10,23 @@ arg_parser = argparse.ArgumentParser(
 )
 arg_parser.add_argument('--create', action='store_true',
                         help='Creates DB schema.')
-arg_parser.add_argument('--import', dest='import_file', metavar='CSV',
+arg_parser.add_argument('--import-db', dest='import2db', metavar='CSV',
                         help='Imports content of a CSV file into DB.')
+arg_parser.add_argument('--import-redis', dest='import2redis', metavar='CSV',
+                        help='Imports content of a CSV file into Redis.')
 
 
 def main():
     args = arg_parser.parse_args()
 
     if args.create:
-        create_db()
+        models.create_db()
 
-    if args.import_file:
-        parse_csv(open(args.import_file))
+    if args.import2db:
+        io.import_csv(open(args.import2db), save=io.save_db)
+
+    if args.import2redis:
+        io.import_csv(open(args.import2redis), save=io.save_redis)
 
 
 if __name__ == '__main__':

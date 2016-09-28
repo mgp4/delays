@@ -9,7 +9,21 @@ Needed: Python 3.5
 1. `virtualenv3 virtualenv`
 2. Make sure `virtualenv/bin` is in `PATH`.
 3. `pip install -r requirements.txt`
-4. Create `flights/settings_local.py` if customized settings are needed.
+
+
+## Settings
+
+Create `flights/settings_local.py` if customized settings are needed, e.g.:
+
+```py
+DB_URL = 'mysql://user:password@localhost/db_name'
+REDIS_CONFIG = {'db': 4}
+```
+
+See more info for:
+
+- [SQLAlchemy](http://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
+- [Redis](https://redis-py.readthedocs.io/en/latest/#redis.StrictRedis)
 
 
 ## Usage
