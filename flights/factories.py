@@ -11,6 +11,8 @@ from .database import db_session
 
 
 faker = Factory.create()
+fake_date_time = lambda: \
+    faker.date_time_between(start_date='-30d', end_date='+30d')
 
 lazy = lambda call: lazy_attribute(lambda obj: call())
 lazy_string = lambda length: lazy(lambda: ''.join(
@@ -18,9 +20,7 @@ lazy_string = lambda length: lazy(lambda: ''.join(
 ))
 lazy_carrier = lazy_string(2)
 lazy_airport = lazy_string(3)
-lazy_date_time = lazy(lambda:
-    faker.date_time_between(start_date='-30d', end_date='+30d')
-)
+lazy_date_time = lazy(fake_date_time)
 #lazy_flight_number = lazy(lambda: ''.join(
 #    [random.choice(string.ascii_uppercase) for _ in range(2)] +
 #    [random.choice(string.digits) for _ in range(3)]

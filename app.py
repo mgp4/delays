@@ -23,6 +23,8 @@ arg_parser.add_argument(
     action='store_true',
     help='Computes sum(abs(predicted_departure - actual_departure)).',
 )
+arg_parser.add_argument('--export', dest='export_csv', metavar='CSV',
+                        help='Exports flights to a CSV file.')
 
 
 def main():
@@ -47,6 +49,11 @@ def main():
         diff = engine.compute_diff_redis() if args.redis \
                else engine.compute_diff_db()
         print('sum: %(sum)s\ncount: %(count)d\navg: %(avg)s' % diff)
+
+    if args.export_csv:
+        io.export_csv(open(args.export_csv, 'w'),
+                      load=io.load_redis if args.redis
+                           else io.load_db)
 
 
 if __name__ == '__main__':

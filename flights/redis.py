@@ -33,3 +33,7 @@ def get(key):
 
 def set(key, value):
     return cache.set(key, json.dumps(value, cls=JSONEncoder))
+
+
+def _count(match):
+    return len(list(cache.scan_iter(match)))

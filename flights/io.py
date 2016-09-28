@@ -63,3 +63,38 @@ def import_csv(csvfile, save=save_db, sparse=False):
         imported += 1
 
     logger.info('%d flights imported.' % imported)
+
+
+def load_db():
+    return models.Flight.query.all()
+
+
+def load_redis():
+    for key in redis.cache.scan_iter('flight_*'):
+        yield redis.get(key)
+
+
+def export_csv(csvfile, load=load_db):
+    fieldnames = ['carrier', 'fltno', 'dep_apt', 'arr_apt',
+                  # 'sched_departure_date',
+                  'scheduled_departure', 'actual_departure']
+    writer = csv.DictWriter(csvfile, fieldnames)
+    writer.writeheader()
+
+    for flight_data in load():
+        col = (lambda name:
+            flight_data[name] if isinstance(flight_data, dict)
+                              and name in flight_data
+            else getattr(flight_data, name, None)
+        )
+        flight = {
+            'carrier': col('carrier'),
+            'fltno': col('flight_number'),
+            'dep_apt': col('departure_airport'),
+            'arr_apt': col('arrival_airport'),
+            'scheduled_departure': col('scheduled_departure'),
+
+            # on purpose!
+            'actual_departure': col('predicted_departure'),
+        }
+        writer.writerow(flight)
