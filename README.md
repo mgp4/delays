@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/mgp4/delays.svg?branch=master)](https://travis-ci.org/mgp4/delays)
 [![Coverage Status](https://coveralls.io/repos/github/mgp4/delays/badge.svg?branch=master)](https://coveralls.io/github/mgp4/delays?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/delays/badge/?version=latest)](http://delays.readthedocs.io/en/latest/?badge=latest)
 
 
 ## Installation
@@ -45,3 +46,9 @@ for more info/commands.
 
 Run `./test.sh`.
 Test coverage is located under the `htmlcov` directory then.
+
+
+## Documentation
+
+Run `make clean html` under the `doc` directory.
+Generated documentation is located under the `doc/_build/html` directory then.
