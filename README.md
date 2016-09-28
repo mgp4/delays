@@ -42,6 +42,15 @@ See [the manual](http://alembic.zzzcomputing.com/en/latest/tutorial.html)
 for more info/commands.
 
 
+## Notebooks
+
+Call `cd notebooks; PYTHONPATH=.. jupyter notebook [--no-browser]`.
+The Jupyter server is listening
+at [http://localhost:8888/](http://localhost:8888/) then.
+
+Remember to mention sparsity of an analyzed data set.
+
+
 ## Testing
 
 Run `./test.sh`.

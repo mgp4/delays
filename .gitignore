@@ -4,5 +4,6 @@
 
 .coverage
 htmlcov/
+.ipynb_checkpoints/
 
 flights/settings_local.py
