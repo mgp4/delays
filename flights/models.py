@@ -22,7 +22,7 @@ class Flight(Base):
     arrival_airport = Column(String(3), nullable=False)
     scheduled_departure = Column(DateTime, nullable=True)
     actual_departure = Column(DateTime, nullable=True)
-    predicated_departure = Column(DateTime, nullable=True)
+    predicted_departure = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return '<Flight %s>' % self.id

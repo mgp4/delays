@@ -4,6 +4,7 @@ import logging.config
 DB_URL = 'sqlite:///:memory:'
 
 REDIS_CONFIG = {}
+REDIS_TEST_CONFIG = {}
 
 
 LOGGING = lambda: {
@@ -28,7 +29,7 @@ LOGGING = lambda: {
     'loggers': {
         '': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
     },

@@ -2,8 +2,9 @@ import pytest
 
 from flights import settings
 settings.DB_URL = 'sqlite:///:memory:'
+settings.REDIS_CONFIG = settings.REDIS_TEST_CONFIG
 
-from flights import models
+from flights import models, redis
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -13,5 +14,6 @@ def db_prepare():
 
 @pytest.yield_fixture(scope='function', autouse=True)
 def db_clean():
-    yield
+    redis.cache.flushdb()
     models.Flight.query.delete()
+    yield

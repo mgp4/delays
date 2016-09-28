@@ -1,11 +1,12 @@
 import random
 import string
 
+import factory
 from factory import lazy_attribute
 from factory.alchemy import SQLAlchemyModelFactory
 from faker import Factory
 
-from . import models
+from . import models, io
 from .database import db_session
 
 
@@ -38,3 +39,15 @@ class Flight(SQLAlchemyModelFactory):
     arrival_airport = lazy_airport
     scheduled_departure = lazy_date_time
     actual_departure = lazy_date_time  # TODO = scheduled +/- few hours
+
+
+def json_flight():
+    return factory.build(dict, FACTORY_CLASS=Flight)
+
+
+def redis_flight():
+    flight = json_flight()
+    for column in ['scheduled_departure', 'actual_departure']:
+        flight[column] = flight[column].strftime('%Y-%m-%d %H:%M:%S')
+    io.save_redis(flight)
+    return flight
