@@ -5,7 +5,7 @@ from .database import db_session
 
 
 def predict_db():
-    for flight in models.Flight.query.all():
+    for flight in models.Flight.query:
         flight.predicted_departure = flight.scheduled_departure
         db_session.add(flight)
         db_session.commit()
@@ -21,7 +21,7 @@ def predict_redis():
 def compute_diff_db():
     sum_ = timedelta()
     count = 0
-    for flight in models.Flight.query.all():
+    for flight in models.Flight.query:
         if flight.actual_departure:
             sum_ += abs(flight.predicted_departure - flight.actual_departure)
             count += 1
@@ -31,7 +31,7 @@ def compute_diff_db():
 def compute_diff_redis():
     sum_ = timedelta()
     count = 0
-    for flight_key in list(redis.cache.scan_iter('flight_*')):
+    for flight_key in redis.cache.scan_iter('flight_*'):
         flight = redis.get(flight_key)
         if flight['actual_departure']:
             sum_ += abs(flight['predicted_departure']

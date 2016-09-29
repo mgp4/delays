@@ -1,25 +1,26 @@
 import csv
+from datetime import datetime
+import logging
 import random
 
-import dateutil.parser
-import logging
-
-from . import models, redis
-from .database import db_session
+from . import models, redis, settings
+from .database import db_session, db_engine
 
 
 logger = logging.getLogger(__name__)
 
 
-def save_db(flight):
-    db_session.add(models.Flight(**flight))
-    db_session.commit()
+def save_db(flights):
+    db_engine.execute(models.Flight.__table__.insert(), flights)
 
 
-def save_redis(flight):
-    redis.set('flight_%s_%s' % (flight['flight_number'],
-                                flight['scheduled_departure']),
-              flight)
+def save_redis(flights):
+    with redis.cache.pipeline() as pipe:
+        for flight in flights:
+            pipe.set('flight_%s_%s' % (flight['flight_number'],
+                                       flight['scheduled_departure']),
+                     redis.dumps(flight))
+        pipe.execute()
 
 
 def import_csv(csvfile, save=save_db, sparse=False):
@@ -33,9 +34,10 @@ def import_csv(csvfile, save=save_db, sparse=False):
     reader = csv.DictReader(csvfile)
     processed = 0
     imported = 0
+    flights = []
 
     for row in reader:
-        if processed % 1000 == 0:
+        if processed % 1000 == 0 and processed:
             if sparse:
                 logger.info('%d flights processed, %d imported...'
                             % (processed, imported))
@@ -52,21 +54,31 @@ def import_csv(csvfile, save=save_db, sparse=False):
             'departure_airport': row['dep_apt'],
             'arrival_airport': row['arr_apt'],
             'scheduled_departure':
-                dateutil.parser.parse(row['scheduled_departure']),
+                datetime.strptime(row['scheduled_departure'],
+                                  settings.DATETIME_FORMAT),
             'actual_departure':
-                dateutil.parser.parse(row['actual_departure'])
+                datetime.strptime(row['actual_departure'],
+                                  settings.DATETIME_FORMAT)
                 if row['actual_departure'] else None,
         }
-        save(flight)
+        flights.append(flight)
 
         processed += 1
         imported += 1
+
+        # bulk saving
+        if imported % 1000 == 0 and imported:
+            save(flights)
+            flights = []
+    else:
+        # save remaining unsaved flights
+        save(flights)
 
     logger.info('%d flights imported.' % imported)
 
 
 def load_db():
-    return models.Flight.query.all()
+    return models.Flight.query
 
 
 def load_redis():

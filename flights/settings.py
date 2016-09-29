@@ -7,6 +7,9 @@ REDIS_CONFIG = {}
 REDIS_TEST_CONFIG = {}
 
 
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
 LOGGING = lambda: {
     'version': 1,
     'disable_existing_loggers': False,

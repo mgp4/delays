@@ -47,5 +47,5 @@ def json_flight(**kwargs):
 
 def redis_flight(**kwargs):
     flight = json_flight(**kwargs)
-    io.save_redis(flight)
+    io.save_redis([flight])
     return flight

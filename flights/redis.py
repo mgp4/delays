@@ -6,22 +6,20 @@ from redis import StrictRedis
 from . import settings
 
 
-DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-
 cache = StrictRedis(**settings.REDIS_CONFIG)
 
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime):
-            return o.strftime(DATETIME_FORMAT)
+            return o.strftime(settings.DATETIME_FORMAT)
         return super().default(o)
 
 
 def datetime_hook(result):
     for key, value in result.items():
         if key.endswith('departure') and value not in ['', None]:
-            result[key] = datetime.strptime(value, DATETIME_FORMAT)
+            result[key] = datetime.strptime(value, settings.DATETIME_FORMAT)
     return result
 
 
@@ -31,8 +29,12 @@ def get(key):
            else None
 
 
+def dumps(value):
+    return json.dumps(value, cls=JSONEncoder)
+
+
 def set(key, value):
-    return cache.set(key, json.dumps(value, cls=JSONEncoder))
+    return cache.set(key, dumps(value))
 
 
 def _count(match):
