@@ -2,7 +2,7 @@
 
 import argparse
 
-from flights import io, models, engine
+from flights import io, engine
 
 
 arg_parser = argparse.ArgumentParser(
@@ -10,8 +10,6 @@ arg_parser = argparse.ArgumentParser(
 )
 arg_parser.add_argument('--redis', action='store_true',
                         help='Try to use Redis as much as possible.')
-arg_parser.add_argument('--create', action='store_true',
-                        help='Creates DB schema.')
 arg_parser.add_argument('--import', dest='import_csv', metavar='CSV',
                         help='Imports content of a CSV file.')
 arg_parser.add_argument('--sparse', type=int, metavar='INT',
@@ -29,9 +27,6 @@ arg_parser.add_argument('--export', dest='export_csv', metavar='CSV',
 
 def main():
     args = arg_parser.parse_args()
-
-    if args.create:
-        models.create_db()
 
     if args.import_csv:
         io.import_csv(open(args.import_csv),

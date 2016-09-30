@@ -32,6 +32,8 @@ See more info for:
 - [SQLAlchemy](http://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
 - [Redis](https://redis-py.readthedocs.io/en/latest/#redis.StrictRedis)
 
+Call `alembic upgrade head` to create the DB schema.
+
 
 ## Usage
 
