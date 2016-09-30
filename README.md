@@ -3,9 +3,14 @@
 [![Documentation Status](https://readthedocs.org/projects/delays/badge/?version=latest)](http://delays.readthedocs.io/en/latest/?badge=latest)
 
 
-## Installation
+## Requirements
 
-Needed: Python 3.5
+- Python 3.5
+- Database: PostgreSQL preferred (big queries can be batched)
+- Redis
+
+
+## Installation
 
 1. `virtualenv3 virtualenv`
 2. Make sure `virtualenv/bin` is in `PATH`.
@@ -17,8 +22,9 @@ Needed: Python 3.5
 Create `flights/settings_local.py` if customized settings are needed, e.g.:
 
 ```py
-DB_URL = 'mysql://user:password@localhost/db_name'
+DB_URL = 'postgresql://user:password@localhost/db_name'
 REDIS_CONFIG = {'db': 4}
+REDIS_TEST_CONFIG = {'db': 11}
 ```
 
 See more info for:

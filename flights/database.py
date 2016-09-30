@@ -8,7 +8,7 @@ from . import settings
 db_engine = create_engine(settings.DB_URL)
 db_session = scoped_session(
     sessionmaker(autocommit=False,
-                 autoflush=False,
+                 autoflush=True,
                  bind=db_engine),
 )
 

@@ -39,3 +39,8 @@ def set(key, value):
 
 def _count(match):
     return len(list(cache.scan_iter(match)))
+
+
+def all_flights():
+    for key in cache.scan_iter('flight_*'):
+        yield get(key)

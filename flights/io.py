@@ -9,6 +9,8 @@ from .database import db_session, db_engine
 
 logger = logging.getLogger(__name__)
 
+BATCH = 1000
+
 
 def save_db(flights):
     db_engine.execute(models.Flight.__table__.insert(), flights)
@@ -37,7 +39,7 @@ def import_csv(csvfile, save=save_db, sparse=False):
     flights = []
 
     for row in reader:
-        if processed % 1000 == 0 and processed:
+        if processed % BATCH == 0 and processed:
             if sparse:
                 logger.info('%d flights processed, %d imported...'
                             % (processed, imported))
@@ -67,7 +69,7 @@ def import_csv(csvfile, save=save_db, sparse=False):
         imported += 1
 
         # bulk saving
-        if imported % 1000 == 0 and imported:
+        if imported % BATCH == 0 and imported:
             save(flights)
             flights = []
     else:
@@ -78,12 +80,11 @@ def import_csv(csvfile, save=save_db, sparse=False):
 
 
 def load_db():
-    return models.Flight.query
+    yield from models.all_flights()
 
 
 def load_redis():
-    for key in redis.cache.scan_iter('flight_*'):
-        yield redis.get(key)
+    yield from redis.all_flights()
 
 
 def export_csv(csvfile, load=load_db):

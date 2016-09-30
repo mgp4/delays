@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy import (
-    Column, Integer, BigInteger, DateTime, String,
+    Column, Integer, DateTime, String,
     Table, ForeignKey,
 )
 from sqlalchemy.orm import relationship
@@ -11,13 +11,15 @@ from .database import Base, db_engine
 
 logger = logging.getLogger(__name__)
 
+YIELD_PER = 100
+
 
 class Flight(Base):
     __tablename__ = 'flight'
 
     id = Column(Integer, primary_key=True)
     carrier = Column(String(3), nullable=False)
-    flight_number = Column(BigInteger, nullable=False)
+    flight_number = Column(String(5), nullable=False)
     departure_airport = Column(String(3), nullable=False)
     arrival_airport = Column(String(3), nullable=False)
     scheduled_departure = Column(DateTime, nullable=True)
@@ -32,6 +34,10 @@ class Flight(Base):
                 '%(departure_airport)s -> %(arrival_airport)s '
                 '@ %(actual_departure)s (sched. %(scheduled_departure)s)'
                 % self.__dict__)
+
+
+def all_flights():
+    return Flight.query.yield_per(YIELD_PER)
 
 
 def create_db():
