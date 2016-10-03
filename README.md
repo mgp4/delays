@@ -5,7 +5,7 @@
 
 ## Requirements
 
-- Python 3.5
+- Python >= 3.4
 - Database: PostgreSQL preferred (big queries can be batched)
 - Redis
 
@@ -55,8 +55,6 @@ for more info/commands.
 Call `cd notebooks; PYTHONPATH=.. jupyter notebook [--no-browser]`.
 The Jupyter server is listening
 at [http://localhost:8888/](http://localhost:8888/) then.
-
-Remember to mention sparsity of an analyzed data set.
 
 
 ## Testing
