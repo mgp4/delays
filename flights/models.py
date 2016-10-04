@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy import (
     Column, Integer, DateTime, String,
-    Table, ForeignKey,
+    Table, Index, ForeignKey,
 )
 from sqlalchemy.orm import relationship
 
@@ -18,13 +18,17 @@ class Flight(Base):
     __tablename__ = 'flight'
 
     id = Column(Integer, primary_key=True)
-    carrier = Column(String(3), nullable=False)
-    flight_number = Column(String(5), nullable=False)
-    departure_airport = Column(String(3), nullable=False)
-    arrival_airport = Column(String(3), nullable=False)
-    scheduled_departure = Column(DateTime, nullable=True)
-    actual_departure = Column(DateTime, nullable=True)
+    carrier = Column(String(3), index=True, nullable=False)
+    flight_number = Column(String(5), index=True, nullable=False)
+    departure_airport = Column(String(3), index=True, nullable=False)
+    arrival_airport = Column(String(3), index=True, nullable=False)
+    scheduled_departure = Column(DateTime, index=True, nullable=True)
+    actual_departure = Column(DateTime, index=True, nullable=True)
     predicted_departure = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index('flight_stop', 'carrier', 'flight_number', 'scheduled_departure'),
+    )
 
     def __repr__(self):
         return '<Flight %s>' % self.id
