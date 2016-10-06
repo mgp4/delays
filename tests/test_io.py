@@ -38,6 +38,20 @@ def test_import_redis():
                                          hour=20, minute=1)
 
 
+def test_import_airports():
+    csv_file = StringIO("""\
+507,"Heathrow","London","United Kingdom","LHR","EGLL",51.4775,-0.461389,83,0,"E","Europe/London"
+26,"Kugaaruk","Pelly Bay","Canada","YBB","CYBB",68.534444,-89.808056,56,-7,"A","America/Edmonton"
+3127,"Pokhara","Pokhara","Nepal","PKR","VNPK",28.200881,83.982056,2712,5.75,"N","Asia/Katmandu"\
+    """)
+    io.import_airports(csv_file)
+
+    assert models.Airport.query.count() == 3
+    airport = models.Airport.query.filter_by(code='PKR').one()
+    assert airport.name == 'Pokhara'
+    assert abs(airport.latitude - 28.2) < 0.001
+
+
 def test_export_db():
     [factories.Flight(predicted_departure=factories.fake_date_time())
             for _ in range(N)]

@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy import (
-    Column, Integer, DateTime, String,
+    Column, Integer, SmallInteger, Numeric, Float, DateTime, String,
     Table, Index, ForeignKey,
 )
 from sqlalchemy.orm import relationship
@@ -38,6 +38,25 @@ class Flight(Base):
                 '%(departure_airport)s -> %(arrival_airport)s '
                 '@ %(actual_departure)s (sched. %(scheduled_departure)s)'
                 % self.__dict__)
+
+
+class Airport(Base):
+    __tablename__ = 'airport'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(70))
+    city = Column(String(50))
+    country = Column(String(40))
+    code = Column(String(3), index=True, unique=True)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    altitude = Column(SmallInteger)
+    tz_offset = Column(Numeric)
+    dst = Column(String(1))
+    tz_name = Column(String(30))
+
+    def __repr__(self):
+        return '<Airport %s>' % self.code
 
 
 def all_flights():

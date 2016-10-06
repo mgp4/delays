@@ -3,6 +3,9 @@ from datetime import datetime
 import logging
 import random
 
+import requests
+import sqlalchemy
+
 from . import models, redis, settings
 from .database import db_session, db_engine
 
@@ -77,6 +80,45 @@ def import_csv(csvfile, save=save_db, sparse=False):
         save(flights)
 
     logger.info('%d flights imported.' % imported)
+
+
+def import_airports(csvfile):
+    reader = csv.reader(csvfile)
+    imported = 0
+
+    for row in reader:
+        if not row[4]:  # no code
+            continue
+
+        airport = models.Airport(
+            id=row[0],
+            name=row[1],
+            city=row[2],
+            country=row[3],
+            code=row[4],
+            latitude=row[6],
+            longitude=row[7],
+            altitude=row[8],
+            tz_offset=row[9],
+            dst=row[10],
+            tz_name=row[11],
+        )
+
+        try:
+            db_session.add(airport)
+            db_session.commit()
+            imported += 1
+        except sqlalchemy.exc.IntegrityError:
+            logger.warning('IntegrityError: %s' % row)
+            db_session.rollback()
+
+    logger.info('%d airports imported.' % imported)
+
+
+def download_airports():
+    resp = requests.get('https://raw.githubusercontent.com/'
+                        'jpatokal/openflights/master/data/airports.dat')
+    import_airports(resp.iter_lines(decode_unicode=True))
 
 
 def load_db():

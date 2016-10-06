@@ -45,6 +45,7 @@ pytz==2016.6.1
 pyzmq==15.4.0
 qtconsole==4.2.1
 redis==2.10.5
+requests==2.11.1
 simplegeneric==0.8.1
 six==1.10.0
 snowballstemmer==1.2.1
