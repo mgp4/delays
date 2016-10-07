@@ -176,6 +176,14 @@ img.emoji {
 	<li>projdeme všechny záznamy a spočítáme sumu rozdílů mezi predikovaným atributem <span style="font-family: 'courier new', courier, monospace;">actual_departure</span> a skutečným <span style="font-family: 'courier new', courier, monospace;">actual_departure</span>, ta bude sloužit jako jediné hodnotící kritérium</li>
 	<li>pokud váš program pro nějaký záznam predikovanou hodnotu nedoplní, budeme předpokládat, že predikuje nulové zpoždění</li>
 </ul>
+<div id="doplneni"> </div>
+<h3>Doplnění</h3>
+<p>Při zveřejnění datasetu jsme předpokládali, že trojice <em>carrier</em>, <em>fltno</em>, <em>scheduled_departure</em> bude vždy dávat jednoznačný <em>actual_departure</em>. Není to tak (díky Jirkovi za upozornění); data jsou v některých případech trochu špinavá a někdy není snadné určit hodnota <em>actual_departure</em> je "ta správná". Původní pravidlo upřednostňovalo takovou hodnotu <em>actual_departure</em>, která "je nejblíž hodnotě <em>scheduled_departure</em>" nebylo úplně šťastně zvolené, neboť se v zápětí objevily případy, kdy mělo letadlo hlášený odlet např 30 min. před plánovaným odletem a zároveň 30 min po plánovaném odletu.</p>
+<p>Pro zjednodušení použijeme lepší pravidlo:</p>
+<p><img class="size-full wp-image-91 aligncenter" src="https://datachallenge.cz/wp-content/uploads/2016/09/Screen-Shot-2016-10-05-at-16.34.58.png" alt="screen-shot-2016-10-05-at-16-34-58" width="724" height="222" /></p>
+<p>Jinýmy slovy: ignorovat všechny záznamy bez <em>actual_departure</em> a pokud k jednomu letu (který je daný šesticí <em>carrier, flight_number, dep_apt, arr_apt,</em><br />
+<em> scheduled_date, scheduled_departure</em>) existuje víc atributů <em>actual_departure</em>, použijeme ten největší z nich. Data jsme se totiž rozhodli interpretovat tak, že pozdější záznamy jsou relevantnější.</p>
+<p>Pro usnadnění všem přihlášeným ještě pošleme takto očištění dataset.</p>
 <h3>Licence</h3>
 <ul>
 	<li>k takto vytvořenému programu nám udělujete licenci podle ustanovení §61 autorského zákona k účelu stanovenému podmínkami této soutěže a <strong>my nejsme oprávněni licenci k programu užít nad rámec této soutěže</strong>.</li>
@@ -212,9 +220,9 @@ Soutěž Kiwi.com data challenge je organizována Kiwi.com pod záštitou Labora
 															<div class="team-item">
 									<img src="https://datachallenge.cz/wp-content/uploads/2016/09/ov.jpg" alt="Ondřej Veselý" class="team-image">
 									<h3>Ondřej Veselý</h3>
-									<div class="team-position"><p>Data team, Kiwi.com</p>
+									<div class="team-position"><p>Full-stack vývojář a datový analytik v Kiwi.com</p>
 </div>
-									<p>Full-stack vývojář, startupový optimista, korporátní agilní pracant, nadšenec do nezisku, univerzitní učitel a striktní datový analytik.</p>
+									<p>V Kiwi.com pracuje hlavně na vývoji backendu (zpracování a analýza velkých dat). Mimo jiné učí Python na Masarykově univerzitě a stará se o <a href="http://www.flowerchecker.com">firmu na poznávání kytek</a></p>
 									<div class="team-social">
 																					<a href="https://www.facebook.com/orwen"><img src="https://datachallenge.cz/wp-content/themes/kiwi-data/images/icon-fb.png" alt=""></a>
 																															<a href="https://twitter.com/xorwen"><img src="https://datachallenge.cz/wp-content/themes/kiwi-data/images/icon-tw.png" alt=""></a>
