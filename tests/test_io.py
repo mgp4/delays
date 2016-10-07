@@ -9,7 +9,7 @@ from flights.database import db_session
 N = 40
 
 csv_file = lambda: StringIO(
-    'carrier,fltno,dep_apt,arr_apt,sched_departure_date,'
+    'carrier,flight_number,dep_apt,arr_apt,sched_departure_date,'
     'scheduled_departure,actual_departure\n'
     '7I,773,CUR,MAO,2016-04-29,2016-04-29 20:50:00,2016-04-30 19:15:00\n'
     'AA,1361,PBI,PHL,2016-04-29,2016-04-29 15:55:00,2016-04-30 08:21:00\n'

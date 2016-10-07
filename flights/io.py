@@ -55,7 +55,7 @@ def import_csv(csvfile, save=save_db, sparse=False):
 
         flight = {
             'carrier': row['carrier'],
-            'flight_number': row['fltno'],
+            'flight_number': row['flight_number'],
             'departure_airport': row['dep_apt'],
             'arrival_airport': row['arr_apt'],
             'scheduled_departure':
@@ -130,7 +130,7 @@ def load_redis():
 
 
 def export_csv(csvfile, load=load_db):
-    fieldnames = ['carrier', 'fltno', 'dep_apt', 'arr_apt',
+    fieldnames = ['carrier', 'flight_number', 'dep_apt', 'arr_apt',
                   # 'sched_departure_date',
                   'scheduled_departure', 'actual_departure']
     writer = csv.DictWriter(csvfile, fieldnames)
@@ -144,7 +144,7 @@ def export_csv(csvfile, load=load_db):
         )
         flight = {
             'carrier': col('carrier'),
-            'fltno': col('flight_number'),
+            'flight_number': col('flight_number'),
             'dep_apt': col('departure_airport'),
             'arr_apt': col('arrival_airport'),
             'scheduled_departure': col('scheduled_departure'),
