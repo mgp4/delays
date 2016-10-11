@@ -40,7 +40,6 @@ class Flight(Base):
                 '@ %(actual_departure)s (sched. %(scheduled_departure)s)'
                 % self.__dict__)
 
-
     src_airport = relationship("Airport", foreign_keys=[departure_airport])
     dst_airport = relationship("Airport", foreign_keys=[arrival_airport])
 
