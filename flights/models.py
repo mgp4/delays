@@ -20,11 +20,12 @@ class Flight(Base):
     id = Column(Integer, primary_key=True)
     carrier = Column(String(3), index=True, nullable=False)
     flight_number = Column(String(5), index=True, nullable=False)
-    departure_airport = Column(String(3), index=True, nullable=False)
-    arrival_airport = Column(String(3), index=True, nullable=False)
+    departure_airport = Column(String(3), ForeignKey("airport.code"), index=True, nullable=False)
+    arrival_airport = Column(String(3), ForeignKey("airport.code"), index=True, nullable=False)
     scheduled_departure = Column(DateTime, index=True, nullable=True)
     actual_departure = Column(DateTime, index=True, nullable=True)
     predicted_departure = Column(DateTime, nullable=True)
+    delay_mins = Column(Integer, index=True, nullable=True)
 
     __table_args__ = (
         Index('flight_stop', 'carrier', 'flight_number', 'scheduled_departure'),
@@ -38,6 +39,10 @@ class Flight(Base):
                 '%(departure_airport)s -> %(arrival_airport)s '
                 '@ %(actual_departure)s (sched. %(scheduled_departure)s)'
                 % self.__dict__)
+
+
+    src_airport = relationship("Airport", foreign_keys=[departure_airport])
+    dst_airport = relationship("Airport", foreign_keys=[arrival_airport])
 
 
 class Airport(Base):
