@@ -115,10 +115,46 @@ def import_airports(csvfile):
     logger.info('%d airports imported.' % imported)
 
 
+def import_carriers(csvfile):
+    reader = csv.reader(csvfile)
+    imported = 0
+
+    for row in reader:
+
+        carrier = models.Carrier(
+            id=row[0],
+            name=row[1],
+            alias=row[2],
+            iata=row[3],
+            icao=row[4],
+            call_sign=row[5],
+            country=row[6],
+            active=row[7],
+        )
+
+        try:
+            db_session.add(carrier)
+            db_session.commit()
+            imported += 1
+        except sqlalchemy.exc.IntegrityError:
+            logger.warning('IntegrityError: %s' % row)
+            db_session.rollback()
+
+    logger.info('%d airlines imported.' % imported)
+
+
 def download_airports():
     resp = requests.get('https://raw.githubusercontent.com/'
                         'jpatokal/openflights/master/data/airports.dat')
+    # with open("airports.dat") as resp:
     import_airports(resp.iter_lines(decode_unicode=True))
+
+
+def download_carriers():
+    resp = requests.get('https://raw.githubusercontent.com/'
+                        'jpatokal/openflights/master/data/airlines.dat')
+    # with open("airlines.dat") as resp:
+    import_carriers(resp.iter_lines(decode_unicode=True))
 
 
 def load_db():

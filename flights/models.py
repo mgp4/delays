@@ -18,7 +18,7 @@ class Flight(Base):
     __tablename__ = 'flight'
 
     id = Column(Integer, primary_key=True)
-    carrier = Column(String(3), index=True, nullable=False)
+    carrier = Column(String(3), ForeignKey("carrier.iata"), index=True, nullable=False)
     flight_number = Column(String(5), index=True, nullable=False)
     departure_airport = Column(String(3), ForeignKey("airport.code"), index=True, nullable=False)
     arrival_airport = Column(String(3), ForeignKey("airport.code"), index=True, nullable=False)
@@ -42,6 +42,7 @@ class Flight(Base):
 
     src_airport = relationship("Airport", foreign_keys=[departure_airport])
     dst_airport = relationship("Airport", foreign_keys=[arrival_airport])
+    airline = relationship("Carrier", foreign_keys=[carrier])
 
 
 class Airport(Base):
@@ -61,6 +62,23 @@ class Airport(Base):
 
     def __repr__(self):
         return '<Airport %s>' % self.code
+
+
+class Carrier(Base):
+    __tablename__ = 'carrier'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(70))
+    alias = Column(String(70))
+    iata = Column(String(3), index=True)
+    icao = Column(String(4), index=True, unique=True)
+    call_sign = Column(String(3), index=True)
+    country = Column(String(40))
+    active = Column(String(1))
+
+    def __repr__(self):
+        return '<Carrier %s:%s>' % (self.iata, self.name)
+
 
 
 def all_flights():
