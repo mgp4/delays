@@ -1,10 +1,14 @@
 from sklearn import svm
 from sklearn import preprocessing
 from . import models
+from . import settings
 import random
-import datetime
+from datetime import datetime, timedelta
 import numpy as np
 from sklearn.externals import joblib
+from tempfile import NamedTemporaryFile
+import shutil
+import csv
 
 
 enc = preprocessing.OneHotEncoder() # might be used to transform categorical features (airport codes, locations, carriers, ...)
@@ -12,7 +16,7 @@ clf = svm.SVC(gamma='auto', C=1.2)
 
 
 def minute_of_day(dt):
-    time = datetime.datetime.time(dt)
+    time = datetime.time(dt)
     return time.hour * 60 + time.minute
 
 
@@ -82,6 +86,54 @@ def test_prediction_db(tests=1000, offset=200000, skip=None):
     print("matched delays: %s (%s%%)" % (matched, matched / tests * 100))
     print("-" * 21)
 
+def predict_csv(filename="flights.csv"):
+    """
+    read flights from csv file, predict actual_departure_time and write into output file,
+    original file then gets replaced with output as required in the task assignment
+    """
+    tempfile = NamedTemporaryFile(delete=False, mode="w")
+    print("Using tempfile %s" % tempfile.name)
+    fields = ["carrier", "flight_number", "dep_apt", "arr_apt", "scheduled_date", "scheduled_departure", "actual_departure"]
+    with open(filename, 'r') as input_file, tempfile as output_file:
+        reader = csv.DictReader(input_file)
+        writer = csv.DictWriter(output_file, fieldnames=fields, extrasaction='ignore')
+        writer.writeheader()
+
+        
+        for row in reader:
+            try:
+                src_airport = models.Airport.query.filter(models.Airport.code == row['dep_apt']).one()
+            except:
+                src_airport = {
+                'latitude': 0,
+                'longitude': 0
+            }
+            flight = {
+                'carrier': row['carrier'],
+                'flight_number': row['flight_number'],
+                'departure_airport': row['dep_apt'],
+                'arrival_airport': row['arr_apt'],
+                'scheduled_departure':
+                    datetime.strptime(row['scheduled_departure'],
+                                      settings.DATETIME_FORMAT),
+                'actual_departure': None,
+            'src_airport': src_airport
+            }
+            delay_mins = clf.predict(np.array(extract_features(flight)).reshape((1, -1)))[0]
+            flight['actual_departure'] = flight['scheduled_departure'] + timedelta(minutes=int(delay_mins))
+
+            # convert datetimes
+            # flight['scheduled_departure'] = datetime.strftime(flight['scheduled_departure'], settings.DATETIME_FORMAT)
+            flight['scheduled_departure'] = row['scheduled_departure']
+            flight['actual_departure'] = datetime.strftime(flight['actual_departure'], settings.DATETIME_FORMAT)
+            flight['dep_apt'] = flight.pop('departure_airport')
+            flight['arr_apt'] = flight.pop('arrival_airport')
+            # print(flight)
+            writer.writerow(flight)
+
+    # TODO: uncoment when ready
+    #shutil.move(tempfile.name, filename)
+    
 
 def store_classifier_model(filename="model.dat"):
     joblib.dump(clf, filename)
