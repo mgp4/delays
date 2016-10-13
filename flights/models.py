@@ -25,6 +25,7 @@ class Flight(Base):
     scheduled_departure = Column(DateTime, index=True, nullable=True)
     actual_departure = Column(DateTime, index=True, nullable=True)
     predicted_departure = Column(DateTime, nullable=True)
+    delay_mins = Column(Integer, index=True, nullable=True)
 
     __table_args__ = (
         Index('flight_stop', 'carrier', 'flight_number', 'scheduled_departure'),
@@ -38,6 +39,22 @@ class Flight(Base):
                 '%(departure_airport)s -> %(arrival_airport)s '
                 '@ %(actual_departure)s (sched. %(scheduled_departure)s)'
                 % self.__dict__)
+
+    src_airport = relationship(
+        'Airport',
+        primaryjoin='Airport.code==Flight.departure_airport',
+        foreign_keys=[departure_airport],
+    )
+    dst_airport = relationship(
+        'Airport',
+        primaryjoin='Airport.code==Flight.arrival_airport',
+        foreign_keys=[arrival_airport],
+    )
+    airline = relationship(
+        'Carrier',
+        primaryjoin='Carrier.iata==Flight.carrier',
+        foreign_keys=[carrier],
+    )
 
 
 class Airport(Base):
@@ -57,6 +74,23 @@ class Airport(Base):
 
     def __repr__(self):
         return '<Airport %s>' % self.code
+
+
+class Carrier(Base):
+    __tablename__ = 'carrier'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    alias = Column(String(70))
+    iata = Column(String(3), index=True)
+    icao = Column(String(4), index=True, unique=True)
+    call_sign = Column(String(70), index=True)
+    country = Column(String(40))
+    active = Column(String(1))
+
+    def __repr__(self):
+        return '<Carrier %s:%s>' % (self.iata, self.name)
+
 
 
 def all_flights():
