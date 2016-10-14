@@ -3,4 +3,5 @@
 DIR="`dirname \"$0\"`"
 cd $DIR
 
-./app.py
+mv delays.csv delays_in.csv
+./app.py --predict

@@ -35,10 +35,8 @@ def main():
                       sparse=args.sparse)
 
     if args.predict:
-        if args.redis:
-            engine.predict_redis()
-        else:
-            engine.predict_db()
+        engine.predict_redis(open('delays_in.csv'),
+                             open('delays.csv', 'w'))
 
     if args.diff:
         diff = engine.compute_diff_redis() if args.redis \

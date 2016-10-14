@@ -1,7 +1,13 @@
-from datetime import timedelta
+import csv
+from datetime import datetime, timedelta
+import logging
 
-from . import models, redis
+import numpy as np
+
+from . import models, redis, settings
 from .database import db_session
+
+logger = logging.getLogger(__name__)
 
 
 def predict_db():
@@ -11,11 +17,29 @@ def predict_db():
     db_session.commit()
 
 
-def predict_redis():
-    for flight_key in list(redis.cache.scan_iter('flight_*')):
-        flight = redis.get(flight_key)
-        flight['predicted_departure'] = flight['scheduled_departure']
-        redis.set(flight_key, flight)
+def predict_redis(in_file, out_file):
+    reader = csv.DictReader(in_file)
+
+    fieldnames = ['carrier', 'flight_number', 'dep_apt', 'arr_apt',
+                  'scheduled_date', 'scheduled_departure', 'actual_departure']
+    writer = csv.DictWriter(out_file, fieldnames)
+    writer.writeheader()
+
+    for row in reader:
+        try:
+            stat = redis.get('departure_%s' % row['dep_apt'])
+            loc = stat['mean']
+            scale = min(abs(stat['max'] - stat['mean']),
+                        abs(stat['mean'] - stat['min'])) / 100.0
+            row['actual_departure'] = (
+                datetime.strptime(row['scheduled_departure'],
+                                  settings.DATETIME_FORMAT)
+                + timedelta(seconds=np.random.normal(loc, scale))
+            ).strftime(settings.DATETIME_FORMAT)
+        except Exception as e:
+            logger.warning(e)
+            row['actual_departure'] = ''
+        writer.writerow(row)
 
 
 def compute_diff_db():
