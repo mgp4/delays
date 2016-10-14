@@ -120,7 +120,6 @@ def import_carriers(csvfile):
     imported = 0
 
     for row in reader:
-
         carrier = models.Carrier(
             id=row[0],
             name=row[1],
@@ -138,6 +137,9 @@ def import_carriers(csvfile):
             imported += 1
         except sqlalchemy.exc.IntegrityError:
             logger.warning('IntegrityError: %s' % row)
+            db_session.rollback()
+        except sqlalchemy.exc.DataError:
+            logger.warning('DataError: %s' % row)
             db_session.rollback()
 
     logger.info('%d airlines imported.' % imported)

@@ -12,7 +12,7 @@
 
 ## Installation
 
-1. `virtualenv3 virtualenv`
+1. `virtualenv3 [--system-site-packages] virtualenv`
 2. Make sure `virtualenv/bin` is in `PATH`.
 3. `pip install -r requirements.txt`
 
