@@ -3,4 +3,4 @@
 DIR="`dirname \"$0\"`"
 cd $DIR
 
-./app.py
+./app.py --predict
