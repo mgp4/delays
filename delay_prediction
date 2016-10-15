@@ -2,5 +2,6 @@
 
 DIR="`dirname \"$0\"`"
 cd $DIR
+[ -f env/bin/activate ] && source env/bin/activate
 
-./app.py
+./app.py --predict

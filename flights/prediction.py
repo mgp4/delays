@@ -86,20 +86,23 @@ def test_prediction_db(tests=1000, offset=200000, skip=None):
     print("matched delays: %s (%s%%)" % (matched, matched / tests * 100))
     print("-" * 21)
 
-def predict_csv(filename="flights.csv"):
+
+def predict_csv(filename="delays.csv"):
     """
     read flights from csv file, predict actual_departure_time and write into output file,
     original file then gets replaced with output as required in the task assignment
     """
-    tempfile = NamedTemporaryFile(delete=False, mode="w")
-    print("Using tempfile %s" % tempfile.name)
+    #tempfile = NamedTemporaryFile(delete=False, mode="w")
+    temp_filename = ".%s_original"
+    shutil.move(filename, temp_filename)
+    #print("Using tempfile %s" % tempfile.name)
     fields = ["carrier", "flight_number", "dep_apt", "arr_apt", "scheduled_date", "scheduled_departure", "actual_departure"]
-    with open(filename, 'r') as input_file, tempfile as output_file:
+    cnt = 0
+    with open(temp_filename, 'r') as input_file, open(filename, 'w') as output_file:
         reader = csv.DictReader(input_file)
         writer = csv.DictWriter(output_file, fieldnames=fields, extrasaction='ignore')
         writer.writeheader()
 
-        
         for row in reader:
             try:
                 src_airport = models.Airport.query.filter(models.Airport.code == row['dep_apt']).one()
@@ -117,7 +120,8 @@ def predict_csv(filename="flights.csv"):
                     datetime.strptime(row['scheduled_departure'],
                                       settings.DATETIME_FORMAT),
                 'actual_departure': None,
-            'src_airport': src_airport
+                'src_airport': src_airport,
+                'scheduled_date': row['scheduled_date']
             }
             delay_mins = clf.predict(np.array(extract_features(flight)).reshape((1, -1)))[0]
             flight['actual_departure'] = flight['scheduled_departure'] + timedelta(minutes=int(delay_mins))
@@ -130,10 +134,10 @@ def predict_csv(filename="flights.csv"):
             flight['arr_apt'] = flight.pop('arrival_airport')
             # print(flight)
             writer.writerow(flight)
+            if cnt % 20 == 0:
+                output_file.flush()
+            cnt += 1
 
-    # TODO: uncoment when ready
-    #shutil.move(tempfile.name, filename)
-    
 
 def store_classifier_model(filename="model.dat"):
     joblib.dump(clf, filename)

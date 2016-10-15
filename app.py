@@ -2,7 +2,7 @@
 
 import argparse
 
-from flights import io, engine
+from flights import io, engine, prediction
 
 
 arg_parser = argparse.ArgumentParser(
@@ -35,10 +35,12 @@ def main():
                       sparse=args.sparse)
 
     if args.predict:
-        if args.redis:
-            engine.predict_redis()
-        else:
-            engine.predict_db()
+        #if args.redis:
+        #    engine.predict_redis()
+        #else:
+        #    engine.predict_db()
+        prediction.restore_classifier_model()
+        prediction.predict_csv()
 
     if args.diff:
         diff = engine.compute_diff_redis() if args.redis \
