@@ -1,1 +1,2 @@
-task.html linguist-documentation
+*.html linguist-documentation
+*.ipynb linguist-documentation
