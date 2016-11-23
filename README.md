@@ -1,7 +1,14 @@
+# Flight delays predictor
+
 [![Build Status](https://travis-ci.org/mgp4/delays.svg?branch=master)](https://travis-ci.org/mgp4/delays)
 [![Coverage Status](https://coveralls.io/repos/github/mgp4/delays/badge.svg?branch=master)](https://coveralls.io/github/mgp4/delays?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/delays/badge/?version=latest)](http://delays.readthedocs.io/en/latest/?badge=latest)
 
+This is our solution to [a competition](https://datachallenge.cz/)
+organized by [Kiwi.com](https://www.kiwi.com).
+
+The official task assignment is backed up in [task.html](task.html)
+and the results are stored in [results.html](results.html).
 
 ## Requirements
 
